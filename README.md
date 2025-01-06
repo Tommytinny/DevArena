@@ -58,3 +58,38 @@ This product is built using the following widely used technologies:
    git clone https://github.com/Tommytinny/DevArena.git
    cd project-name
    ```
+2. **Set Up Virtual Environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+3. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+## 🚀 Usage
+### **Student Workflow
+1. log in to access your dashboard.
+
+2.  Select your course and view assigned tasks.
+
+3. Complete tasks and upload your solutions.
+
+4. View real-time feedback and improve your code.
+
+### **Instructor Workflow**
+1. Log in with an instructor account.
+
+2. Create programming tasks and assign deadlines.
+
+3. Review and grade student submissions.
+
+4. Manage the course progress and provide feedback.
+
+## 📜 License
+This project is licensed under the MIT License. Feel free to use, modify, and distribute this project with proper attribution.
+
+## 🙌 Acknowledgments
+- Inspired by practical learning initiatives in computer science education.
+
+
