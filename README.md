@@ -75,45 +75,66 @@ This product is built using the following widely used technologies:
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Install Dependencies**
+3. **Install MySQL**
+   - **On Ubuntu/Debian:**
+     ```bash
+     sudo apt update
+     sudo apt install mysql-server
+     sudo mysql_secure_installation
+     ```
+   - **On macOS:**
+     ```bash
+     brew install mysql
+     brew services start mysql
+     ```
+   - **On Windows:**
+     Download and install MySQL from the [official website](https://dev.mysql.com/downloads/installer/).
+
+4. **Navigate to the Backend Directory**
+   ```bash
+   cd backend
+   ```
+
+5. **Install Dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Set Up Environment Variables**
+6. **Set Up Environment Variables**
    Create a `.env` file in the backend directory and add the following environment variables:
    ```env
-   FLASK_APP=run.py
-   FLASK_ENV=development
-   DATABASE_URL=mysql+pymysql://username:password@localhost/devarena
+   ENV=development
+   API_HOST=0.0.0.0
+   API_PORT=5000
+   AUTH_TYPE=JWT
+   MYSQL_USER=your_username
+   MYSQL_PWD=your_password
+   MYSQL_HOST=localhost
+   MYSQL_DB=DevArena
    SECRET_KEY=your_secret_key
    ```
 
-5. **Run Database Migrations**
+8. **Start the Backend API Server**
    ```bash
-   flask db upgrade
+   python3 -m api.v1.app
    ```
+   The application will start on `http://localhost:3000`.
 
-6. **Start the Backend Server**
-   ```bash
-   flask run
-   ```
-
-7. **Navigate to the Frontend Directory**
+9. **Navigate to the Frontend Directory**
    ```bash
    cd ../frontends
    ```
 
-8. **Install Frontend Dependencies**
-   ```bash
-   npm install
-   ```
+10. **Install Frontend Dependencies**
+    ```bash
+    npm install
+    ```
 
-9. **Start the Frontend Server**
-   ```bash
-   npm start
-   ```
-   The application will start on `http://localhost:3000`.
+11. **Start the Frontend Server**
+    ```bash
+    npm run dev
+    ```
+    The application will start on `http://localhost:5173`.
 
 ---
 
@@ -131,10 +152,6 @@ This product is built using the following widely used technologies:
 3. Review and grade student submissions.
 4. Manage the course progress and provide feedback.
 
----
-
-## 📸 **Screenshots**
-_Add screenshots of the application here to showcase the user interface and features._
 
 ---
 
@@ -154,5 +171,3 @@ This project is licensed under the MIT License. Feel free to use, modify, and di
 
 ## 🙌 **Acknowledgments**
 - Inspired by practical learning initiatives in computer science education.
-
-
