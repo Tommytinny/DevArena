@@ -25,7 +25,8 @@ export default function LoginPage() {
     password: ''
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<{ email?: string; password?: string; general?: string }>({});
   const { isAuthenticated, login } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -45,7 +46,11 @@ export default function LoginPage() {
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setError(error.errors[0].message);
+        const fieldErrors = error.errors.reduce((acc, curr) => {
+          acc[curr.path[0]] = curr.message;
+          return acc;
+        }, {});
+        setError(fieldErrors); // Update error to be an object
       }
       return false;
     }
@@ -53,13 +58,13 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
+    setError({});
 
     if (!validateForm()) {
       return;
     }
 
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
       const response = await axiosInstance.post('/auth_session/login', formData);
@@ -80,22 +85,31 @@ export default function LoginPage() {
           const from = '/admin';
           navigate(from, { replace: true });
         } else {
-          const from = (location.state as any)?.from?.pathname || '/';
+          const from = (location.state as any)?.from?.pathname || '/dashboard';
           navigate(from, { replace: true });
         }
         
         return;
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
-      setError(errorMessage);
+      let errorMessage = 'Login failed. Please try again.';
+      if (error.response) {
+        // Server responded with a status code outside 2xx range
+        console.log(error.response.data);
+        errorMessage = error.response.data?.error || 'Invalid credentials.';
+      } else if (error.request) {
+        // Request was made, but no response received
+        errorMessage = 'No response from server. Please check your connection.';
+      }
+    
+      setError({ general: errorMessage }); // Update error to include general errors
       toast({
         variant: "destructive",
         title: "Error",
         description: errorMessage,
       });
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -109,9 +123,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md p-4">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
+          <CardTitle className="text-2xl font-bold text-center text-red-500">
             Welcome to DevArena
           </CardTitle>
           <CardDescription className="text-center">
@@ -120,27 +134,30 @@ export default function LoginPage() {
         </CardHeader>
         
         <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          
+          <div aria-live="assertive">
+            {error.general && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertDescription>{error.general}</AlertDescription>
+              </Alert>
+            )}
+          </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
+                aria-label="Email Address"
                 placeholder="your@email.com"
                 value={formData.email}
                 onChange={(e) => {
-                  setError('');
+                  setError((prev) => ({ ...prev, email: '' })); // Clear email error
                   setFormData({ ...formData, email: e.target.value });
                 }}
                 disabled={isLoading}
                 className="w-full"
               />
+              {error.email && <p className="text-red-500 text-sm">{error.email}</p>}
             </div>
             
             <div className="space-y-2">
@@ -148,22 +165,24 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
+                aria-label='Password'
+                placeholder="******"
                 value={formData.password}
                 onChange={(e) => {
-                  setError('');
+                  setError((prev) => ({ ...prev, password: '' })); // Clear password error
                   setFormData({ ...formData, password: e.target.value });
                 }}
                 disabled={isLoading}
                 className="w-full"
               />
+              {error.password && <p className="text-red-500 text-sm">{error.password}</p>}
             </div>
-
             <Button 
               type="submit" 
-              className="w-full"
-              disabled={isLoading}
+              className="w-full bg-red-500 hover:bg-red-400"
+              disabled={isSubmitting}
             >
-              {isLoading ? (
+              {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Logging in...
@@ -174,19 +193,6 @@ export default function LoginPage() {
             </Button>
           </form>
         </CardContent>
-
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link 
-              to="/register" 
-              className="text-primary hover:underline"
-              tabIndex={0}
-            >
-              Register here
-            </Link>
-          </p>
-        </CardFooter>
       </Card>
     </div>
   );
