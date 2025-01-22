@@ -169,6 +169,11 @@ const DashboardPage: React.FC = () => {
         setScheduledProjects(scheduled);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
+        toast({
+          title: 'Error',
+          description: 'Unable to load dashboard data. Please try again later.',
+          variant: 'destructive',
+        });
       } finally {
         setIsLoading(false);
       }
