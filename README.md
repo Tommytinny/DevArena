@@ -6,6 +6,7 @@ _A web application built mainly for higher institutions to make coding education
 
 ## 📋 **Table of Contents**
 1. [Introduction](#introduction)  
+2. [Features](#features)  
 3. [Workflow](#workflow)  
 4. [Setup and Installation](#setup-and-installation)  
 5. [Usage](#usage)  
@@ -17,16 +18,26 @@ _A web application built mainly for higher institutions to make coding education
 ---
 
 ## 📖 **Introduction**  
-Many students in computer science department struggle with programming due to insufficient hands-on practice in their courses. This platform bridges the gap by providing:  
+Many students in computer science departments struggle with programming due to insufficient hands-on practice in their courses. This platform bridges the gap by providing:  
 - **Practical programming tasks** tailored to academic levels.  
 - Automated and manual code evaluation tools for both students and instructors.  
 - A robust system to track student progress and enforce deadlines.
 
-**Mission:** To empower students with practical coding skills through interactive projects based on their syllabus  and automated feedback.  
+**Mission:** To empower students with practical coding skills through interactive projects based on their syllabus and automated feedback.  
 
 ---
 
-## ⚙️ Workfloww
+## ✨ **Features**
+- **User Authentication:** Secure login and registration for students and instructors.
+- **Task Management:** Create, assign, and manage programming tasks.
+- **Automated Grading:** Real-time feedback and automated code evaluation.
+- **Progress Tracking:** Monitor student progress and performance.
+- **Collaboration Tools:** Discussion forums and peer reviews.
+- **Resource Sharing:** Upload and share study materials and resources.
+
+---
+
+## ⚙️ **Workflow**
 
 This product is built using the following widely used technologies:
 
@@ -56,40 +67,92 @@ This product is built using the following widely used technologies:
 1. **Clone the Repository**  
    ```bash
    git clone https://github.com/Tommytinny/DevArena.git
-   cd project-name
+   cd DevArena
    ```
 2. **Set Up Virtual Environment**
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
 3. **Install Dependencies**
    ```bash
    pip install -r requirements.txt
    ```
-## 🚀 Usage
-### **Student Workflow
-1. log in to access your dashboard.
 
-2.  Select your course and view assigned tasks.
+4. **Set Up Environment Variables**
+   Create a `.env` file in the backend directory and add the following environment variables:
+   ```env
+   FLASK_APP=run.py
+   FLASK_ENV=development
+   DATABASE_URL=mysql+pymysql://username:password@localhost/devarena
+   SECRET_KEY=your_secret_key
+   ```
 
+5. **Run Database Migrations**
+   ```bash
+   flask db upgrade
+   ```
+
+6. **Start the Backend Server**
+   ```bash
+   flask run
+   ```
+
+7. **Navigate to the Frontend Directory**
+   ```bash
+   cd ../frontends
+   ```
+
+8. **Install Frontend Dependencies**
+   ```bash
+   npm install
+   ```
+
+9. **Start the Frontend Server**
+   ```bash
+   npm start
+   ```
+   The application will start on `http://localhost:3000`.
+
+---
+
+## 🚀 **Usage**
+
+### **Student Workflow**
+1. Log in to access your dashboard.
+2. Select active projects and view assigned tasks.
 3. Complete tasks and upload your solutions.
-
 4. View real-time feedback and improve your code.
 
 ### **Instructor Workflow**
 1. Log in with an instructor account.
-
-2. Create programming tasks and assign deadlines.
-
+2. Create programming projects with tasks and assign deadlines.
 3. Review and grade student submissions.
-
 4. Manage the course progress and provide feedback.
 
-## 📜 License
+---
+
+## 📸 **Screenshots**
+_Add screenshots of the application here to showcase the user interface and features._
+
+---
+
+## 🤝 **Contributing**
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature-branch`)
+3. Commit your changes (`git commit -m 'Add some feature'`)
+4. Push to the branch (`git push origin feature-branch`)
+5. Open a Pull Request
+
+---
+
+## 📜 **License**
 This project is licensed under the MIT License. Feel free to use, modify, and distribute this project with proper attribution.
 
-## 🙌 Acknowledgments
+---
+
+## 🙌 **Acknowledgments**
 - Inspired by practical learning initiatives in computer science education.
 
 
