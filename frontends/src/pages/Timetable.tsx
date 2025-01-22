@@ -50,11 +50,13 @@ export default function TimetablePage() {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
+    
   }
 
   useEffect(() => {
-    setIsLoading(false);
     fetchTimetable();
   }, [])
   return (
