@@ -44,7 +44,7 @@ export default function Sidebar() {
                     className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/courses' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                     to="/courses"
                     >
-                         <BookOpen className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">My Courses</span>}
+                         <BookOpen className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">Courses</span>}
                     </Link>
                     <Link 
                     className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/schedule' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}

@@ -4,10 +4,10 @@ import axiosInstance from '@/services/axiosInstance';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import Loading from '@/components/loading/Loading';
@@ -34,6 +34,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const from = (location.state as any)?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
@@ -46,8 +47,8 @@ export default function LoginPage() {
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const fieldErrors = error.errors.reduce((acc, curr) => {
-          acc[curr.path[0]] = curr.message;
+        const fieldErrors = error.errors.reduce((acc: Record<string, string>, curr) => {
+          acc[curr.path[0] as string] = curr.message;
           return acc;
         }, {});
         setError(fieldErrors); // Update error to be an object
@@ -85,12 +86,13 @@ export default function LoginPage() {
           const from = '/admin';
           navigate(from, { replace: true });
         } else {
-          const from = (location.state as any)?.from?.pathname || '/dashboard';
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const from = (location.state as any)?.from?.pathname || '/';
           navigate(from, { replace: true });
         }
-        
         return;
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       let errorMessage = 'Login failed. Please try again.';
       if (error.response) {

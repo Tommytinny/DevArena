@@ -10,13 +10,13 @@ import { User, Course, Project } from '../types/dashboard';
 import CourseCard from '@/components/dashboard/CourseCard';
 import ProjectList from '@/components/dashboard/ProjectList';
 import ProgressSection from '@/components/dashboard/ProjectSection';
-import Loading from '@/components/loading/Loading';
+import { DashboardPageSkeleton } from '@/components/loading/Skeleton';
 import { Events } from '@/components/schedule/Event';
 import { Event } from '@/types/schedule';
 import { CurrentUserLevel } from '@/services/userService';
 
 
-const COLORS = [
+export const COLORS = [
   { color: "bg-blue-200" },
   { color: "bg-orange-50" },
   { color: "bg-yellow-50" },
@@ -38,6 +38,8 @@ const DashboardPage: React.FC = () => {
   const [selectedDate] = useState(new Date());
   const [events, setEvents] = useState<Event[]>([]);
   const [levelName, setLevelName] = useState(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const fetchEvents = async () => {
     try {
@@ -60,9 +62,6 @@ const DashboardPage: React.FC = () => {
     stringToDate(event.date).getFullYear() === selectedDate.getFullYear()
   )
   
-
-  const navigate = useNavigate();
-  const { toast } = useToast();
 
   const getTimeOfDay = () => {
     const currentHour = new Date().getHours();
@@ -189,18 +188,16 @@ const DashboardPage: React.FC = () => {
             <Header />
             <Sidebar/>
             {isLoading ? 
-            <div className='flex justify-center items-center h-[100vh] w-[100vw]'>
-                <Loading type='bars' />
-            </div> :
+            <DashboardPageSkeleton /> :
             <div className="p-6 lg:px-4 px-2 max-w-full w-full lg:overflow-scroll space-y-6 mt-10  lg:mt-0 lg:pr-32">
               <div className="space-y-6 py-4 w-full lg:px-4 px-2">
                 {/* Header Section */}
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-start mb-6">
                   <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Dashboard</h1>
                     <p className="dark:text-gray-300 font-normal">Good {`${getTimeOfDay()}`}, {user?.first_name}!</p>
                   </div>
-                  <Badge variant="secondary" className="bg-slate-800 dark:bg-slate-500 hover:bg-slate-700 text-white px-4 py-1">
+                  <Badge variant="secondary" className="bg-slate-800 dark:bg-slate-500 hover:bg-slate-700 text-white px-4 py-1 mt-1">
                     {levelName}
                   </Badge>
                 </div>
@@ -226,7 +223,7 @@ const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* Projects and Progress Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:px-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:px-4 px-2">
                   <div>
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-xl font-semibold dark:text-white">Current Projects</h2>
@@ -243,7 +240,7 @@ const DashboardPage: React.FC = () => {
                 </div>
 
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:px-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:px-4 px-2">
                 {/* Progress Section */}
                 <div className='mt-4'>
                   <h2 className="text-xl font-semibold mb-2 dark:text-white ">Progress</h2>
