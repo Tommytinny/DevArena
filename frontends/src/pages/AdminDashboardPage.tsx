@@ -2,6 +2,8 @@ import { UsersList } from '@/components/Admin/users/Users';
 import { LevelsList } from '@/components/Admin/levels/Levels';
 import { CoursesList } from '@/components/Admin/courses/Courses';
 import { ProjectsList } from '@/components/Admin/projects/Projects';
+import { EventsList } from '@/components/Admin/events/Events';
+import { TimetablesList } from '@/components/Admin/timetable/Timetable';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 
@@ -17,11 +19,14 @@ export default function AdminDashboard() {
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
+            <TabsTrigger value="timetables">Timetables</TabsTrigger>
           </TabsList>
           <UsersList />
           <LevelsList />
           <CoursesList />
           <ProjectsList />
+          <EventsList />
+          <TimetablesList />
         </Tabs>
     </div>
     );

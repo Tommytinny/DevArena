@@ -38,12 +38,11 @@ export default function CourseCard({ course, colorClass }: CourseCardProps) {
       <hr className="border-[1px] border-gray-900 my-2"/>
       <div className="flex justify-between items-center">
         <span className="font-bold"></span>
-        <Link 
-          to={`/projects/${course.id}`}
+        <div
           className="text-xs px-3 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-gray-50"
         >
-          View Course
-        </Link>
+          Enrolled
+        </div>
       </div>
     </div>
   );

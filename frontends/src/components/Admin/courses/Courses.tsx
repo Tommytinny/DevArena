@@ -25,12 +25,12 @@ export function CoursesList() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
+  const [updatedCourses, setUpdatedCourses] = useState(null);
 
   const handleEditCourse = (updatedCourse: Course) => {
     setCourses(courses.map(course => course.id === updatedCourse.id ? updatedCourse : course));
     setIsEditModalOpen(false);
   };
-  
 
   const fetchCourse = async () => {
     try {
@@ -45,10 +45,78 @@ export function CoursesList() {
       console.error('Error', error);
     } 
   };
+  
 
   useEffect(() => {
-    fetchCourse();
-  }, [])
+    const fetchCourse = async () => {
+      try {
+        const response = await axiosInstance.get('/courses');
+        if (response.status === 200) {
+          return response.data; // Return the courses data
+        }
+        return [];
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+        return [];
+      }
+    };
+  
+    const fetchLevel = async (id: string) => {
+      try {
+        const levelResponse = await axiosInstance.get(`/levels/${id}`);
+        if (levelResponse.status === 200) {
+          return `${levelResponse.data.name} - ${levelResponse.data.semester}`;
+        }
+      } catch (error) {
+        console.error('Error fetching level:', error);
+      }
+      return '';
+    };
+  
+    const fetchInstructor = async (id: string) => {
+      try {
+        const instructorResponse = await axiosInstance.get(`/users/${id}`);
+        if (instructorResponse.status === 200) {
+          return `${instructorResponse.data.title} ${instructorResponse.data.first_name} ${instructorResponse.data.last_name}`;
+        }
+      } catch (error) {
+        console.error('Error fetching instructor:', error);
+      }
+      return '';
+    };
+  
+    const fetchProject = async (id: string) => {
+      try {
+        const projectsResponse = await axiosInstance.get(`/courses/${id}/projects`);
+        if (projectsResponse.status === 200) {
+          return projectsResponse.data;
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+      return [];
+    };
+  
+    const updateCourses = async () => {
+      try {
+        const courses = await fetchCourse();
+        const newCourses = await Promise.all(
+          courses.map(async (course: any) => ({
+            ...course,
+            level: await fetchLevel(course.level_id),
+            instructor: await fetchInstructor(course.instructor_id),
+            project_no: (await fetchProject(course.id)).length,
+          }))
+        );
+        setUpdatedCourses(newCourses); // Update the state with enriched course data
+        setLoading(false); // Set loading to false after updating
+      } catch (error) {
+        console.error('Error updating courses:', error);
+      }
+    };
+  
+    updateCourses();
+  }, []);
 
   return (
     <>
@@ -68,7 +136,7 @@ export function CoursesList() {
       </div>
 
       <Table
-        courses={courses}
+        courses={updatedCourses}
         onEdit={(course) => {
           setSelectedCourse(course);
           setIsEditModalOpen(true);

@@ -14,7 +14,7 @@ export default function ProgressSection({ courses }: ProgressSectionProps) {
   return (
     <div className="space-y-4">
       {courses.map((course, i) => (
-        <div key={i} className="bg-slate-800 rounded-lg p-4 text-white">
+        <div key={i} className="bg-slate-800 p-4 text-white">
           <div className="flex justify-between items-center mb-2">
             <div>
               <h3 className="font-medium">{course.course_code} - {course.title}</h3>

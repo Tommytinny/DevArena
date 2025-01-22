@@ -20,6 +20,8 @@ export function AddCourseModal({ isOpen, onClose }: AddCourseModalProps) {
   const { toast } = useToast();
 
   const [instructors, setInstructors] = useState<User[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [levels, setLevels] = useState<Level[]>([]);
   const [formData, setFormData] = useState({
     title: '',
@@ -66,30 +68,36 @@ export function AddCourseModal({ isOpen, onClose }: AddCourseModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await axiosInstance.post('/courses', formData);
-    if (response.status === 201) {
-      onClose();
-      toast({
-        title: "Course Created",
-        description: "Course has been successfully created.",
-      })
-      setFormData({
-        title: '',
-        course_code: '',
-        description: '',
-        units: '',
-        instructor_id: '',
-        level_id: '',
-        resources: [
-          {
-            title: '',
-            description: '',
-            resource_type: '',
-            file_url: '',
-          }
-        ]
-      });
-    };
+    setIsSubmitting(true);
+    try {
+      const response = await axiosInstance.post('/courses', formData);
+      if (response.status === 201) {
+        onClose();
+        setIsSubmitting(false);
+        toast({
+          title: "Course Created",
+          description: "Course has been successfully created.",
+        })
+        setFormData({
+          title: '',
+          course_code: '',
+          description: '',
+          units: '',
+          instructor_id: '',
+          level_id: '',
+          resources: [
+            {
+              title: '',
+              description: '',
+              resource_type: '',
+              file_url: '',
+            }
+          ]
+        });
+      };
+    } catch (error) {
+      setError('Error submitting data');
+    }
   };
 
   useEffect(() => {
@@ -198,6 +206,7 @@ export function AddCourseModal({ isOpen, onClose }: AddCourseModalProps) {
           </button>
           <button
             type="submit"
+            disabled={isSubmitting}
             className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
           >
             {isSubmitting ? <div className="flex justify-center items-center">

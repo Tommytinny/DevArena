@@ -6,24 +6,30 @@ import ProjectCard from '@/components/Project/ProjectCard';
 import TaskList from '@/components/Project/TaskList';
 import { useParams } from 'react-router-dom';
 import axiosInstance from '@/services/axiosInstance';
+import Loading from '@/components/loading/Loading';
 
 export default function ProjectDetails() {
   const { projectId } = useParams();
   const [project, setProject] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch data for the project
   const fetchProjectData = async (id: string) => {
     try {
-      const [projectResponse, resourcesResponse, tasksResponse, submissionResponse] = await Promise.all([
+      const [coursesResponse, projectResponse, resourcesResponse, tasksResponse, submissionResponse] = await Promise.all([
+        axiosInstance.get(`/courses/`),
         axiosInstance.get(`/projects/${id}`),
         axiosInstance.get(`/projects/${id}/resources`),
         axiosInstance.get(`/projects/${id}/tasks`),
         axiosInstance.get(`/projects/${id}/submissions`),
       ]);
 
+      const course = coursesResponse.data.filter((course) => course.id === projectResponse.data.course_id);
+
       setProject({
         ...projectResponse.data,
+        courseName: course[0].course_code,
         resources: resourcesResponse.data,
         tasks: tasksResponse.data.map((task: any) => ({
           ...task,
@@ -39,6 +45,8 @@ export default function ProjectDetails() {
       setProgress(progressCal);
     } catch (error) {
       console.error('Error fetching project data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -49,12 +57,14 @@ export default function ProjectDetails() {
   }, [projectId]);
 
   return (
-    <Theme>
-      {({ darkMode, toggleRight, setDarkMode }) => (
         <div className="flex flex-col h-screen bg-[#F5F7FA] dark:bg-slate-800">
                 <div className="flex flex-1 lg:overflow-hidden">
                   <Header />
-                  <Sidebar darkMode={darkMode} toggleRight={toggleRight} setDarkMode={setDarkMode}/>
+                  <Sidebar />
+                  {isLoading ? 
+            <div className='flex justify-center items-center h-[100vh] w-[100vw]'>
+                <Loading type='bars' />
+            </div> :
             <main className="p-6 px-4 max-w-full w-full lg:overflow-scroll space-y-6 mt-10 lg:mt-0 lg:pr-32">
               {project && (
                 <>
@@ -62,10 +72,8 @@ export default function ProjectDetails() {
                   <TaskList tasks={project.tasks} project_id={projectId}/>
                 </>
               )}
-            </main>
+            </main>}
           </div>
         </div>
-      )}
-    </Theme>
   );
 }

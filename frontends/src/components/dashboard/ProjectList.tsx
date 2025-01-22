@@ -21,8 +21,10 @@ export default function ProjectList({ projects, type }: ProjectListProps) {
 
   if (projects.length === 0) {
     return (
-      <div className="flex items-center justify-center p-6 bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 border-slate-300">
-        No {type === 'current' ? 'Current' : 'Scheduled'} Projects
+      <div className="flex flex-col items-center justify-center h-[200px] bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/25 p-8 text-center">
+        <div className="flex flex-col items-center max-w-md space-y-2">
+          <h3 className="text-xl font-semibold">No {type === 'current' ? 'Current' : 'Scheduled'} Projects</h3>
+        </div>
       </div>
     );
   }
@@ -35,7 +37,7 @@ export default function ProjectList({ projects, type }: ProjectListProps) {
           to={type === 'current' ? `/projects/${project.id}` : '#'}
           className={type === 'current' ? '' : 'pointer-events-none'}
         >
-          <div className="flex items-center justify-between bg-white dark:bg-slate-800 rounded-lg p-4 border dark:border-slate-700 border-slate-300">
+          <div className="flex items-center justify-between bg-white dark:bg-slate-800 p-4 border dark:border-slate-700 border-slate-300">
             <div className="flex items-center gap-4">
               <div>
                 <div className="font-medium dark:text-white">{project.code} - {project.name}</div>

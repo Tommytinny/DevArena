@@ -5,7 +5,7 @@ import { LoaderCircle } from 'lucide-react';
 import axiosInstance from '@/services/axiosInstance';
 
 interface TableProps {
-  courses: Course[];
+  courses: null;
   onEdit: (course: Course) => void;
   onDelete: (course: Course) => void;
   loading: boolean;
@@ -26,47 +26,7 @@ export type NewCourse = {
 };
 
 export function Table({ courses, onEdit, onDelete, loading }: TableProps) {
-  const [updatedCourses, setUpdatedCourses] = useState<NewCourse[]>([])
 
-
-  useEffect(() => {
-    const fetchLevel = async (id: string) => {
-      const levelResponse = await axiosInstance.get(`/levels/${id}`);
-      if (levelResponse.status === 200) {
-        return `${levelResponse.data.name} - ${levelResponse.data.semester}`;
-      }
-      return '';
-    }
-
-    const fetchInstructor = async (id: string) => {
-      const instructorResponse =  await axiosInstance.get(`/users/${id}`);
-      if (instructorResponse.status === 200) {
-        return `${instructorResponse.data.title} ${instructorResponse.data.first_name} ${instructorResponse.data.last_name}`;
-      }
-      return '';
-    }
-
-    const fetchProject = async (id: string) => {
-      const projectsResponse =  await axiosInstance.get(`/courses/${id}/projects`);
-      if (projectsResponse.status === 200) {
-        return projectsResponse.data;
-      }
-      return '';
-    }
-    const setCourses = async (courses: Course[]) => {
-      const newCourses = await Promise.all(
-        courses.map(async (course) => ({
-          ...course,
-          level: await fetchLevel(course.level_id),
-          instructor: await fetchInstructor(course.instructor_id),
-          project_no: Object.keys(await fetchProject(course.id)).length
-        }))
-      );
-      setUpdatedCourses(newCourses);
-    };
-  
-    setCourses(courses);
-  }, []);
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -92,7 +52,7 @@ export function Table({ courses, onEdit, onDelete, loading }: TableProps) {
             </td>
           </tr>
             :
-          Object.keys(updatedCourses).length < 1 ?
+          Object.keys(courses).length < 1 ?
           <tr>
             <td colSpan={5} style={{ position: "relative", height: "100px" }}>
               <div className='flex justify-center'>
@@ -100,7 +60,7 @@ export function Table({ courses, onEdit, onDelete, loading }: TableProps) {
               </div>
               
             </td>
-          </tr> : updatedCourses.map((course, index) => (
+          </tr> : courses.map((course, index) => (
             <tr key={index} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center justify-start">

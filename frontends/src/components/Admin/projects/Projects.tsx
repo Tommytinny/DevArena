@@ -6,6 +6,7 @@ import { DeleteProjectModal } from './layout/DeleteProjectModal';
 import { Plus } from 'lucide-react';
 import { TabsContent } from "@/components/ui/tabs";
 import axiosInstance from '@/services/axiosInstance';
+import { fetchAllResource } from '@/services/admin/api';
 
 export type Resource = {
   id: string;
@@ -57,7 +58,7 @@ export function ProjectsList() {
 
   const handleEditProject = (updatedProject: Project) => {
     setProjects(projects.map(project => project.id === updatedProject.id ? updatedProject : project));
-    setIsEditModalOpen(false);
+    setIsEditModalOpen(true);
   };
 
   const fetchProject = async () => {
@@ -75,8 +76,105 @@ export function ProjectsList() {
   };
 
   useEffect(() => {
-    fetchProject();
-  }, [])
+    const fetchProject = async () => {
+      try {
+        const response = await axiosInstance.get('/projects');
+        if (response.status === 200) {
+          return response.data;
+        }
+        return []; // Return empty array if response fails
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        return [];
+      }
+    };
+  
+    const fetchTasks = async (id: string) => {
+      try {
+        const response = await axiosInstance.get(`/projects/${id}/tasks`);
+        if (response.status === 200) {
+          const data = response.data;
+  
+          // Fetch test cases concurrently for all tasks
+          const fullTask = await Promise.all(
+            data.map(async (task: any) => {
+              try {
+                const testCasesResponse = await axiosInstance.get(`/tasks/${task.id}/test_cases`);
+                return { ...task, testCases: testCasesResponse.data };
+              } catch (error) {
+                console.error(`Error fetching test cases for task ${task.id}:`, error);
+                return { ...task, testCases: [] }; // Default to empty testCases
+              }
+            })
+          );
+  
+          return fullTask;
+        }
+        return []; // Return empty array if response fails
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+        return [];
+      }
+    };
+  
+    const tasksCount = async (id: string) => {
+      try {
+        const response = await axiosInstance.get(`/projects/${id}/tasks`);
+        if (response.status === 200) {
+          return Object.keys(response.data).length;
+        }
+        return 0; // Return 0 if response fails
+      } catch (error) {
+        console.error('Error fetching task count:', error);
+        return 0;
+      }
+    };
+  
+    const fetchResource = async (projectId: string) => {
+      try {
+        const resourcesResponse = await axiosInstance.get(`/projects/${projectId}/resources`);
+        if (resourcesResponse.status === 200) {
+          return resourcesResponse.data;
+        }
+        return []; // Return empty array if response fails
+      } catch (error) {
+        console.error('Error fetching resources:', error);
+        return [];
+      }
+    };
+  
+    const updatedProjects = async () => {
+      try {
+        setLoading(true); // Start loading
+  
+        const projects = await fetchProject();
+  
+        const newProjects = await Promise.all(
+          projects.map(async (project: any) => {
+            const tasks = await fetchTasks(project.id);
+            const resources = await fetchResource(project.id);
+            const taskCount = await tasksCount(project.id);
+
+            return {
+              ...project,
+              tasks,
+              resources,
+              taskCount,
+            };
+          })
+        );
+  
+        setProjects(newProjects); // Update state with enriched projects
+        setLoading(false); // Stop loading
+      } catch (error) {
+        console.error('Error updating projects:', error);
+        setLoading(false); // Stop loading even if there's an error
+      }
+    };
+  
+    updatedProjects(); // Call async function to fetch and update projects
+  }, []); // Dependency array remains empty if nothing changes
+  
 
   return (
     <>
@@ -118,6 +216,12 @@ export function ProjectsList() {
 
       {selectedProject && (
         <>
+          <EditProjectModal
+            isOpen={isEditModalOpen}
+            onClose={() => {setIsEditModalOpen(false); fetchProject();}}
+            project={selectedProject}
+            onEdit={handleEditProject}
+          />
           <DeleteProjectModal
             isOpen={isDeleteModalOpen}
             onClose={() => {

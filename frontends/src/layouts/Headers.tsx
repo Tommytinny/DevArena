@@ -1,4 +1,5 @@
-import { Menu,  Book, Calendar, LayoutDashboard, Settings, User, PanelsTopLeft } from "lucide-react"
+import { useEffect } from "react";
+import { Menu,  Book, Calendar, LayoutDashboard, Settings, User, LogOut, PanelsTopLeft } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from "@radix-ui/react-navigation-menu"
@@ -6,123 +7,104 @@ import { Button } from "@/components/ui/button"
 import { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { HeightIcon, WidthIcon } from "@radix-ui/react-icons"
+import { BookOpenCheck } from "lucide-react";
+import { X } from "lucide-react"
+import { useLocation } from "react-router-dom";
 
 export default function Header() {
+    const location = useLocation();
+    const [ currentPage, setCurrentPage ] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
     const [open, setOpen] = useState(false)
   
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
-    const [isClicked, ] = useState(false);
+    const [isClicked, setIsClicked] = useState(false);
+
+    useEffect(() => {
+            setCurrentPage(location.pathname);
+    }, [])
 
     return (
         <div >
             {/* Header */}
-            <header className="fixed top-0 left-0 right-0 z-50 md:hidden">
+            <header 
+                className="fixed top-0 left-0 right-0 md:hidden"
+                style={{
+                    zIndex: 50,
+                }}>
             <div className="flex items-center justify-between lg:px-12 px-6 py-4 bg-white shadow z-10">
             <div className="flex items-center">
             
-            <h1 className="text-red-500 font-bold text-center text-2xl font-sans">DevArena</h1>
+            <Link 
+                to="/"
+                className="text-red-500 font-bold text-center text-2xl font-sans"
+            > DevArena</Link>
             </div>
             <div className="block lg:hidden">
-                <NavigationMenu>
-                    <NavigationMenuList>
-                        <NavigationMenuItem>
-                            <NavigationMenuTrigger>
-                                <Button variant="ghost" size="icon" onClick={toggleSidebar}>
-                                    <Menu  className="text-[#0B1939]" style={{ width: "32px", height: "32px" }} />
-                                </Button>
-                            </NavigationMenuTrigger>
-                            <NavigationMenuContent>
-                            <div className={`bg-white text-[#333333] shadow-md transition-all duration-300 lg:block ${isSidebarOpen ? 'w-64' : 'w-16'}`}>
-                                <nav className="mt-4 mx-4">
-                                <Button
-                                variant="ghost"
-                                className={`flex items-center w-full text-lg font-semibold px-4 py-2 hover:bg-[#4A90E2] hover:text-white ${isClicked ? 'bg-[#4A90E2]' : ''} ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}
-                                >
-                                    <Link 
-                                    to="/"
-                                    className="flex justify-center items-center"
-                                    >
-                                        <LayoutDashboard className={`${isSidebarOpen ? 'w-6 h-6' : 'w-4 h-4'}`} />
-                                        {isSidebarOpen && <span className="ml-2">Dashboard</span>}
-                                    </Link>
-                                
-                                </Button>
-                                <Button
-                                variant="ghost"
-                                className={`flex items-center w-full text-lg font-semibold px-4 py-2 hover:bg-[#4A90E2] hover:text-white ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}
-                                >
-                                    <Link 
-                                    to="/projects"
-                                    className="flex justify-center items-center"
-                                    >
-                                        <PanelsTopLeft className={`${isSidebarOpen ? 'w-8 h-6' : 'w-2 h-2'}`} />
-                                        {isSidebarOpen && <span className="ml-2">Projects</span>}
-                                    </Link>
-                                
-                                </Button>
-                                <Button
-                                variant="ghost"
-                                className={`flex items-center w-full text-lg font-semibold px-4 py-2 hover:bg-[#4A90E2] hover:text-white ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}
-                                >
-                                    <Link 
-                                    to="/courses"
-                                    className="flex justify-center items-center"
-                                    >
-                                        <Book className="w-6 h-6" />
-                                        {isSidebarOpen && <span className="ml-2">Courses</span>}
-                                    </Link>
-                                
-                                </Button>
-                                <Button
-                                variant="ghost"
-                                className={`flex items-center w-full text-lg font-semibold px-4 rounded-lg py-2 hover:bg-[#4A90E2] hover:text-white ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}
-                                >
-                                    <Link 
-                                    to="/schedules"
-                                    className="flex justify-center items-center"
-                                    >
-                                        <Calendar className="w-2 h-2" />
-                                        {isSidebarOpen && <span className="ml-2">Schedules</span>}
-                                    </Link>
-                                
-                                </Button>
-                                <Button
-                                variant="ghost"
-                                className={`flex items-center w-full text-lg font-semibold px-4 rounded-lg py-2 hover:bg-[#4A90E2] hover:text-white ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}
-                                >
-                                    <Link 
-                                    to="/profile"
-                                    className="flex justify-center items-center"
-                                    >
-                                        <User className="w-2 h-2" />
-                                        {isSidebarOpen && <span className="ml-2">Profile</span>}
-                                    </Link>
-                                
-                                </Button>
-                                <Button
-                                variant="ghost"
-                                className={`flex items-center w-full text-lg font-semibold px-4 rounded-lg py-2 hover:bg-[#4A90E2] hover:text-white ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}
-                                >
-                                    <Link 
-                                    to="/settings"
-                                    className="flex justify-center items-center"
-                                    >
-                                        <Settings className="w-6 h-6" />
-                                        {isSidebarOpen && <span className="ml-2">Settings</span>}
-                                    </Link>
-                                
-                                </Button>
-                                </nav>
-                                </div>
-                            </NavigationMenuContent>
-                        </NavigationMenuItem>
-                    </NavigationMenuList>
-                </NavigationMenu>
-                
+            {isClicked ? 
+                <Button variant="ghost" size="icon" onClick={() => setIsClicked(false)}>
+                    <X className="text-[#0B1939]" style={{ width: "32px", height: "32px" }} />
+                </Button> :   
+                <Button variant="ghost" size="icon" onClick={() => setIsClicked(true)}>
+                   <Menu  className="text-[#0B1939]" style={{ width: "32px", height: "32px" }} />
+                </Button>}
             </div>
             </div>
             </header>
+            {isClicked &&
+            <div className={`fixed top-[72px] w-full z-50 inset-0 pb-4 text-[#333333] shadow-md transition-all duration-300 lg:hidden`}>
+                                <nav className="pt-4 px-4 bg-white">
+                                <div className="space-y-4">
+                                <Link 
+                                    to="/"
+                                    className={`flex items-center gap-2  hover:text-red-500 text-lg font-semibold px-4 ${currentPage === '/' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                                    >
+                                        <LayoutDashboard className="w-5 h-5" />
+                                        {isSidebarOpen && <span className="ml-2">Dashboard</span>}
+                                    </Link>
+                                <Link 
+                                    to="/courses"
+                                    className={`flex items-center gap-2  hover:text-red-500 text-lg font-semibold px-4 ${currentPage === '/courses' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                                    >
+                                        <Book className="w-5 h-5" />
+                                        {isSidebarOpen && <span className="ml-2">Courses</span>}
+                                    </Link>
+                                <Link 
+                                    to="/schedule"
+                                    className={`flex items-center gap-2  hover:text-red-500 text-lg font-semibold px-4 ${currentPage === '/schedule' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                                    >
+                                        <Calendar className="w-5 h-5" />
+                                        {isSidebarOpen && <span className="ml-2">Schedules</span>}
+                                    </Link>
+                                    <Link 
+                                    to="/timetable"
+                                    className={`flex items-center gap-2  hover:text-red-500 text-lg font-semibold px-4 ${currentPage === '/timetable' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                                    >
+                                        <BookOpenCheck className="w-5 h-5" />
+                                        {isSidebarOpen && <span className="ml-2">Timetable</span>}
+                                </Link>
+                                </div>
+                                <div className="border-t-2 mt-12 py-6 space-y-2">
+                                        <Link 
+                                        to="/profile"
+                                        className={`flex items-center gap-2  hover:text-red-500 text-lg font-semibold px-4 ${currentPage === '/profile' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                                        >
+                                            <User className="w-5 h-5" />
+                                            {isSidebarOpen && <span className="ml-2">Profile</span>}
+                                        </Link>
+                                        <Link 
+                                        to="/logout"
+                                        className={`flex items-center gap-2  hover:text-red-500 text-lg font-semibold px-4`}
+                                        >
+                                            <LogOut className="w-5 h-5" />
+                                            {isSidebarOpen && <span className="ml-2">Log Out</span>}
+                                        </Link>
+                                
+                                </div>
+                                
+                                
+                                </nav>
+                                </div>}
         </div>
         
     )

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { BookOpen, Trophy, BarChart } from 'lucide-react';
 
-export default function Sidebar({ darkMode, toggleRight, setDarkMode }) {
+export default function Sidebar() {
     const location = useLocation();
     const [ currentPage, setCurrentPage ] = useState('');
 
@@ -23,7 +23,7 @@ export default function Sidebar({ darkMode, toggleRight, setDarkMode }) {
         <div >
             {/* Sidebar */}
             <aside className={`h-full bg-white dark:text-gray-400 dark:bg-slate-800 text-[#333333] font-mono border-r border-r-[#E6E6E6] dark:border-gray-500 transition-all duration-100 hidden lg:block ${isSidebarOpen ? 'w-52' : 'w-20'}`}>
-            <div className={`flex items-center ${isSidebarOpen ? 'ml-2': 'ml-6'} pt-4 mb-8 gap-2 `}>
+            <div className={`flex items-center gap-3 ${isSidebarOpen ? 'ml-2': 'ml-6'} pt-4 mb-8 gap-2 `}>
                 <Menu className="w-8 h-8 cursor" onClick={toggleSidebar} />
                 {isSidebarOpen && <span className="text-red-500 font-bold text-center text-2xl font-sans">
                     DevArena
@@ -32,26 +32,38 @@ export default function Sidebar({ darkMode, toggleRight, setDarkMode }) {
             </div>
             <nav className="relative h-full">
                 <div className="absolute inset-x-0 top-0 flex items-center justify-center">
-                <div className="space-y-6">
+                <div className="space-y-5 mt-6">
                     <Link 
-                    className={`flex items-center gap-2  hover:text-red-500  ${currentPage === '/' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                    className={`flex items-center gap-3  hover:text-red-500  ${currentPage === '/' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                     to="/"
                     onClick={() => setCurrentPage('/dashboard')}
                     >
-                         <Home className="w-5 h-5" />{isSidebarOpen && <span>Home</span>}
+                         <Home className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">Home</span>}
                     </Link>
                     <Link 
-                    className={`flex items-center gap-2 hover:text-red-500  ${currentPage === '/courses' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                    className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/courses' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                     to="/courses"
                     >
-                         <BookOpen className="w-5 h-5" />{isSidebarOpen && <span>My Courses</span>}
+                         <BookOpen className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">My Courses</span>}
+                    </Link>
+                    <Link 
+                    className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/schedule' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                    to="/schedule"
+                    >
+                         <Calendar className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">Schedules</span>}
+                    </Link>
+                    <Link 
+                    className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/timetable' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                    to="/timetable"
+                    >
+                         <Calendar className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">Timetable</span>}
                     </Link>
                     {/*<Link 
                     className={`flex items-center gap-2 hover:text-red-500  ${currentPage === '/practical-details' ? 'text-red-500' : 'text-gray-600'}`}
                     to="/practical-details"
                     >
                          <Code className="w-5 h-5" />{isSidebarOpen && <span>Projects</span>}
-                    </Link>*/}
+                    </Link>
                     <Link 
                     className={`flex items-center gap-2 hover:text-red-500  ${currentPage === 'achievements' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                     to="/"
@@ -76,29 +88,25 @@ export default function Sidebar({ darkMode, toggleRight, setDarkMode }) {
                     onClick={() => setCurrentPage('settings')}
                     >
                          <Settings className="w-5 h-5" />{isSidebarOpen && <span>Settings</span>}
-                    </Link>
+                    </Link>*/}
                 </div>
                 </div>
                 <div className='absolute inset-x-0 bottom-24'>
                      <div className=' border-t border-gray-300 dark:border-gray-500'>
                         <div className="space-y-6 mt-4 px-6">
-                            <div className='flex gap-2 items-center text-gray-600 dark:text-slate-400'>
-                                {darkMode !== 'dark' ? <><ToggleRight className="w-8 h-8 cursor" onClick={() => {setDarkMode('dark'); toggleRight()}}  />{isSidebarOpen && <span>{darkMode.charAt(0).toUpperCase() + darkMode.slice(1)} Mode</span>}</> : <><ToggleLeft className="w-8 h-8 cursor" onClick={() => {setDarkMode('light'); toggleRight()}} />{isSidebarOpen && <span>{darkMode.charAt(0).toUpperCase() + darkMode.slice(1)} Mode</span>}</>}
-                            </div>
-                            
                         
                             <Link 
-                            className={`flex items-center gap-2 hover:text-red-500  ${currentPage === '/profile' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
-                            to="/"
+                            className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/profile' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                            to="/profile"
                             onClick={() => setCurrentPage('/profile')}
                             >
-                                <User className="w-5 h-5 border rounded-3xl bg-gray-100 dark:bg-slate-800" />{isSidebarOpen && <span>Profile</span>}
+                                <User className="w-6 h-6 border rounded-3xl bg-gray-100 dark:bg-slate-800" />{isSidebarOpen && <span className="text-xl">Profile</span>}
                             </Link>
                             <Link 
-                                className={`flex items-center gap-2 hover:text-red-500  ${currentPage === '/logout' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
+                                className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/logout' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                                 to="/logout"
                                 onClick={() => setCurrentPage('/logout')}
-                                > <LogOut className="w-5 h-5" />{isSidebarOpen && <span>Log out</span>}
+                                > <LogOut className="w-6 h-6" />{isSidebarOpen && <span className="text-xl">Log out</span>}
                                 </Link>
                         
                         </div>

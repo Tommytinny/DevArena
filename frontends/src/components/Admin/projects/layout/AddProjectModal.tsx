@@ -316,7 +316,7 @@ export function AddProjectModal({ isOpen, onClose }: AddProjectModalProps) {
         <div className="flex items-center gap-4">
           <Label className="block text-sm font-medium text-gray-700 w-28">Start date</Label>
           <Input 
-            type="date"
+            type="datetime-local"
             required
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             value={formData.start}
@@ -326,7 +326,7 @@ export function AddProjectModal({ isOpen, onClose }: AddProjectModalProps) {
         <div className="flex items-center gap-4">
           <Label className="block text-sm font-medium text-gray-700 w-28">Deadline date</Label>
           <Input 
-            type="date"
+            type="datetime-local"
             required
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             value={formData.deadline}
@@ -388,7 +388,7 @@ export function AddProjectModal({ isOpen, onClose }: AddProjectModalProps) {
             className="flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
           >
             <Plus size={16} className="mr-1" />
-            Add New Resource
+            Add more resource
           </button>
         </div>
         {formData.tasks.map((task, taskIndex) => (
@@ -410,7 +410,7 @@ export function AddProjectModal({ isOpen, onClose }: AddProjectModalProps) {
             className="flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
           >
             <Plus size={16} className="mr-1" />
-            Add New Task
+            Add more task
           </button>
         </div>
         </>}

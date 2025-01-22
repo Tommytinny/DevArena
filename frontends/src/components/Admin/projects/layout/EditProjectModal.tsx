@@ -1,24 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from './Modal';
-import type { Project } from '../../../../../components/Admin/components/projects/Projects';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from "@/components/ui/label";
+import { TaskInput } from './editComponent/TaskInput';
+import { ResourceInput } from './editComponent/ResourceInput';
+import axiosInstance from '@/services/axiosInstance';
 
 interface EditProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  project: Project;
-  onEdit: (project: Project) => void;
+  project: any[];
+  onEdit: (project: any) => void;
 }
 
 export function EditProjectModal({ isOpen, onClose, project, onEdit }: EditProjectModalProps) {
   const [formData, setFormData] = useState(project);
 
-  useEffect(() => {
-    setFormData(project);
-  }, [project]);
+  const removeTask = (taskIndex: number) => {
+    setFormData({
+      ...formData,
+      tasks: formData.tasks.filter((_, i) => i !== taskIndex),
+    });
+  };
+
+  const removeResource = (resourceIndex: number) => {
+    setFormData({
+      ...formData,
+      resources: formData.resources.filter((_, i) => i !== resourceIndex),
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +62,7 @@ export function EditProjectModal({ isOpen, onClose, project, onEdit }: EditProje
         <div className="flex items-center gap-4">
           <Label className="block text-sm font-medium text-gray-700 w-28">Start date</Label>
           <Input 
-            type="date"
+            type="datetime-locals"
             required
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             value={formData.start}
@@ -60,7 +72,7 @@ export function EditProjectModal({ isOpen, onClose, project, onEdit }: EditProje
         <div className="flex items-center gap-4">
           <Label className="block text-sm font-medium text-gray-700 w-28">Deadline date</Label>
           <Input 
-            type="date"
+            type="datetime-local"
             required
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             value={formData.deadline}
@@ -106,52 +118,25 @@ export function EditProjectModal({ isOpen, onClose, project, onEdit }: EditProje
             </SelectContent>
           </Select>
         </div>
-        {/*<div>
-          <Label className="block text-sm font-medium text-gray-700">Course Units</Label>
-          <Input
-            type="text"
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            value={formData.units}
-            onChange={(e) => setFormData({ ...formData, units: e.target.value })}
+        {formData.resources.map((resource, resourceIndex) => (
+          <ResourceInput
+          key={resourceIndex}
+          index={resourceIndex}
+          onRemove={() => removeResource(resourceIndex)}
+          onChange={(field, value) => updateResource(resourceIndex, field, value)}
+          values={resource}
           />
-        </div>
-        <div>
-          <Label htmlFor="course-name" className="text-right">Level Name</Label>
-          <Select
-          value={formData.level_id}
-          onValueChange={(value) => setFormData({ ...formData, level_id: value })}
-          >
-            <SelectTrigger className="col-span-3">
-              <SelectValue placeholder="Select level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {['ND 1', 'ND 2', 'HND 1', 'HND 2'].map((level, index) => (
-                  <SelectItem key={index} value={level}>{level}</SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="course-name" className="text-right">Instructor</Label>
-          <Select
-          value={formData.instructor_id}
-          onValueChange={(value) => setFormData({ ...formData, instructor_id: value })}
-          >
-            <SelectTrigger className="col-span-3">
-              <SelectValue placeholder="Select Instructor" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {['Dr Ogunlola'].map((instructor, index) => (
-                  <SelectItem key={index} value={instructor}>{instructor}</SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>*/}
+        ))}
+        {formData.tasks.map((task, taskIndex) => (
+          <TaskInput
+          key={taskIndex}
+          index={taskIndex}
+          onRemove={() => removeTask(taskIndex)}
+          onChange={(field, value) => updateTask(taskIndex, field, value)}
+          values={task}
+          />
+        ))}
+        
 
         <div className="flex justify-end gap-4 mt-6">
           <button

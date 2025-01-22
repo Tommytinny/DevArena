@@ -27,3 +27,33 @@ export const calculateTimeRemaining = (targetDate: string): TimeRemaining => {
     secs: Math.floor((difference % (1000 * 60)) / 1000)
   };
 };
+
+
+export function getMonthDays(month: number, year: number): Date[] {
+  const days: Date[] = []
+  const lastDay = new Date(year, month + 1, 0)
+
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    days.push(new Date(year, month, d))
+  }
+
+  return days
+}
+
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', { 
+    month: 'short',
+    day: 'numeric'
+  }).format(date)
+}
+
+export function isSameDay(date1: Date, date2: Date): boolean {
+  return date1.getDate() === date2.getDate() && 
+         date1.getMonth() === date2.getMonth() && 
+         date1.getFullYear() === date2.getFullYear()
+}
+
+export function getTime(date: Date): string {
+  const time = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' }).format(date);
+  return time;
+}

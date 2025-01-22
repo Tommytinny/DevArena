@@ -29,17 +29,9 @@ interface TaskInputProps {
       order_index: string;
     }>;
   };
-  language: string;
 }
 
-export function TaskInput({ index, onRemove, onChange, values, language }: TaskInputProps) {
-  
-  const addTestCase = () => {
-    onChange('testCases', [
-      ...values.testCases,
-      { input: '', expected: '', errorMessage: '' },
-    ]);
-  };
+export function TaskInput({ index, onRemove, onChange, values }: TaskInputProps) {
 
   const removeTestCase = (testCaseIndex: number) => {
     onChange(
@@ -204,16 +196,6 @@ export function TaskInput({ index, onRemove, onChange, values, language }: TaskI
               values={testCase}
             />
           ))}
-          <div className="flex justify-end gap-4 mt-10">
-            <button
-              type="button"
-              onClick={addTestCase}
-              className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              <Plus size={16} className="mr-1" />
-              Add more test case
-            </button>
-          </div>
         </div>
       </div>
     </div>

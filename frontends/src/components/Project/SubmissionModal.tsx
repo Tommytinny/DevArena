@@ -8,11 +8,13 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { Badge } from '../ui/badge';
+import ReactLoading from "react-loading";
+import { useToast } from '@/hooks/use-toast';
 import axiosInstance from '@/services/axiosInstance';
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function SubmissionModal({ task, taskResults, projectId, onClose, }: { task: any; taskResults: any; projectId: string; onClose: () => void }) {
+export default function SubmissionModal({ task, taskResults, projectId, onClose }: { task: any; taskResults: any; projectId: string; onClose: () => void }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +23,7 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose,
   const [taskData, setTaskData] = useState(task);
   const [taskResult,  setTaskResult] = useState(taskResults);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+  const { toast } = useToast();
 
 
   const fetchTaskData = async (project_id: string, task_id: string) => {
@@ -30,12 +33,14 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose,
         axiosInstance.get(`/projects/${project_id}/submissions`),
       ]);
 
-      return {
-          ...taskResponse.data,
-          submission: submissionResponse.data.filter((sub: any) => sub.task_id === taskResponse.id)
-        };
+      const submission = submissionResponse.data.filter(
+        (sub: any) => sub.task_id === taskResponse.data.id
+      );
+
+      return { ...taskResponse.data, submission };
     } catch (error) {
       console.error('Error fetching project data:', error);
+      return task;
     }
   };
 
@@ -70,6 +75,8 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose,
     }
   }
 
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const handleSubmitFile = async (e: React.FormEvent<HTMLFormElement>, task_id: string, language: string) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -93,10 +100,16 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose,
     try {
       const submission = await axiosInstance.post('/submissions', formData);
       if (submission.status === 201) {
+        toast({
+          title: "Success",
+          description: "File submitted successfully",
+        });
         const updatedTasks = await fetchTaskData(projectId, task_id);
-        console.log(updatedTasks);
         setTaskData(updatedTasks);
         setIsSubmitting(false);
+        setErrorMessage('');
+        setFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
       }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
@@ -143,6 +156,15 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose,
       setIsSubmitting(false);
     }
   }
+
+  useEffect(() => {
+    if (taskResult && taskResult.length) {
+      const hasFailedTest = taskResult.some((test) => test.status === 'failed');
+      setFailedTest(hasFailedTest);
+    }
+  }, [taskResult]);
+
+  
 
   return (
     <>
@@ -260,23 +282,25 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose,
                         <Button className="bg-[#ff4444] rounded-[3px]" type='submit' disabled={isSubmitting}>
                             {isSubmitting ? 
                             <div className="flex justify-center items-center">
-                                <LoaderCircle className="h-4 w-4 animate-spin" />Submitting...
+                                <ReactLoading type="bubbles" color="#EF4444" height={100} width={50} />
                             </div> : "Submit"}
                         </Button>
                       </form>
                     </div>
                   )}
                 </>
-               : <>{task.submission[0].status !== "pending"  ?   
+               : <>{taskData.submission[0].status !== "pending"  ?   
                 <>
-                <div className='flex items-center my-2 mx-6'>
-                  <div>
+                <div className='my-2 mx-6'>
+                  <div className='flex items-center'>
+
                   <Alert variant="default" className="mb-4 text-green-600">
                     <AlertTitle>All Tests Passed!</AlertTitle>
                     <AlertDescription>Your submission has passed all tests.</AlertDescription>
                   </Alert>
+                  </div>
                   <div className="my-4 mx-6">
-                      <h4 className="font-semibold mb-2">Tests:</h4>
+                      <h4 className="font-semibold mb-2">Requirements:</h4>
                       <ul className="space-y-2">
                         {taskResult.map((test, index) => (
                           <div key={index}>
@@ -296,7 +320,7 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose,
                         
                       </ul>
                     </div> 
-                </div>
+               
                 </div>
                 </> : 
                 <div className='my-6'>
@@ -305,7 +329,12 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose,
                   </div>
                   <div className="flex items-center justify-center mt-4">
                     <div className='block text-center'>
-                    <Button className="bg-[#ff4444] rounded-[3px]" onClick={() => handleRunChecker(task.id, task.language, task.submission[0].id)}>
+                    {isLoading && 
+                            <div className='flex justify-center items-center'>
+                              <ReactLoading type="bubbles" color="#EF4444" height={100} width={50} />
+                              
+                              </div>}
+                    <Button disabled={isLoading} className={isLoading ? "hidden" : "bg-[#ff4444] rounded-[3px]"} onClick={() => {handleRunChecker(taskData.id, taskData.language, taskData.submission[0].id); setIsLoading(true)}}>
                           Run Checker
                     </Button>
                     </div>
@@ -325,7 +354,8 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose,
                   <X className="h-5 w-5" />
                   </button>
                 </div>
-                <form key={task.id} onSubmit={(e) => handleSubmitFile(e, task.id, task.language)} className="m-8 space-y-4 grid gap-4 py-4">
+                <form key={task.id} onSubmit={(e) => handleSubmitFile(e, task.id, task.language)} className="m-8 space-y-4 grid gap-4 py-2">
+                  <h1 className='text-center text-lg font-semibold'>Code Submission</h1>
                   {errorMessage && (
                       <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
                           <span className="text-red-600">{errorMessage}</span>

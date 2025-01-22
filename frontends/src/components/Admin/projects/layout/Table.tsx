@@ -1,61 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Edit2, Trash2 } from 'lucide-react';
-import type { Project } from '../../../../../components/Admin/components/projects/Projects';
 import { LoaderPinwheel } from 'lucide-react';
-import type { Resource } from '../../../../../components/Admin/components/projects/Projects';
-import type { Task } from '../../../../../components/Admin/components/projects/Projects';
-import axiosInstance from '@/services/axiosInstance';
 
 
 interface TableProps {
-  projects: Project[];
-  onEdit: (project: Project) => void;
-  onDelete: (project: Project) => void;
+  projects: any;
+  onEdit: (project: any) => void;
+  onDelete: (project: any) => void;
   loading: boolean;
 }
 
-export type NewProject = {
-  id: string;
-  name: string;
-  description: string;
-  start: string;
-  deadline: string;
-  project_type: string;
-  resources: Resource[];
-  tasks: Task[];
-  task: number;
-}
 
 export function Table({ projects, onEdit, onDelete, loading }: TableProps) {
-  const [updatedProjects, setUpdatedProjects] = useState<NewProject[]>([])
 
-
-  useEffect(() => {
-    const fetchTasks = async (id: string) => {
-      try {
-        const response = await axiosInstance.get(`/projects/${id}/tasks`);
-  
-        if (response.status === 200) {
-          const data = response.data;
-          return data
-        }
-      } catch (error) {
-        console.error('Error', error);
-      } 
-    }
-
-    const setProjects = async (projects: Project[]) => {
-      const newProjects = await Promise.all(
-        projects.map(async (project) => ({
-          ...project,
-          task: Object.keys(await fetchTasks(project.id)).length,
-        }))
-      );
-      setUpdatedProjects(newProjects);
-    };
-  
-    setProjects(projects);
-  }, [projects]);
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -80,7 +37,7 @@ export function Table({ projects, onEdit, onDelete, loading }: TableProps) {
             </td>
           </tr>
             :
-          Object.keys(updatedProjects).length < 1 ?
+          Object.keys(projects).length < 1 ?
           <tr>
             <td colSpan={5} style={{ position: "relative", height: "100px" }}>
               <div className='flex justify-center'>
@@ -88,7 +45,7 @@ export function Table({ projects, onEdit, onDelete, loading }: TableProps) {
               </div>
               
             </td>
-          </tr> : updatedProjects.map((project) => (
+          </tr> : projects.map((project) => (
             <tr key={project.id} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center justify-start">
@@ -100,7 +57,7 @@ export function Table({ projects, onEdit, onDelete, loading }: TableProps) {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <div className="flex items-center justify-start">
                   <div className="">
-                    <div className="text-sm font-medium text-gray-900">{project.task}</div>
+                    <div className="text-sm font-medium text-gray-900">{project.taskCount}</div>
                   </div>
                 </div>
               </td>
