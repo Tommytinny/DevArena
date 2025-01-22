@@ -19,7 +19,7 @@ export default function ProgressSection({ courses }: ProgressSectionProps) {
             <div>
               <h3 className="font-medium">{course.course_code} - {course.title}</h3>
               <p className="text-sm text-gray-300">
-                {course.completedProjectCount} / {course.projectCount} projects
+                {course.completedProjectCount} / {course.projectCount} projects completed
               </p>
             </div>
             <Button

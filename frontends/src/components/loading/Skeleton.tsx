@@ -192,3 +192,62 @@ export function DashboardPageSkeleton() {
          </div>
   )
 }
+
+
+export function SchedulePageSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            {Array.from({ length: 1 }).map((_, i) => (
+            <div key={i} className="rounded border-2 border-gray-300 bg-white p-4">
+    
+                {/* Skeleton for events */}
+                <div className="space-y-2">
+                {Array.from({ length: 1 }).map((_, j) => (
+                    <div key={j}>
+                    <div className="flex justify-between mb-2 items-center">
+                        <div className="animate-pulse bg-gray-300 rounded h-6 w-6" />
+                        <div className="animate-pulse bg-gray-300 rounded h-4 w-20 mb-1" />
+                        <div className="animate-pulse bg-gray-300 rounded h-6 w-6" />
+                    </div>
+                    
+                    <div className="grid grid-cols-7  gap-2 mt-8">
+                    {Array.from({ length: 7}).map((_, x) => (
+                        <div key={x} className="animate-pulse bg-gray-300 rounded h-8 w-8 rounded-lg" />
+                    ))}
+                    </div>
+                    <div className="animate-pulse bg-gray-300 rounded h-[1px] w-full mt-2" />
+                    <div className="grid grid-cols-7  gap-2 mt-8">
+                        {Array.from({ length: 30}).map((_, x) => (
+                            <div key={x} className="animate-pulse bg-gray-300 rounded h-8 w-8 rounded-lg" />
+                        ))}
+                    </div>
+                    </div>
+                ))}
+                </div>
+            </div>))}
+        </div>
+        <div>
+            {Array.from({ length: 1 }).map((_, i) => (
+            <div key={i} className="rounded border-2 border-gray-300 bg-white p-4 h-[285px]">
+    
+                {/* Skeleton for events */}
+                <div className="space-y-2">
+                {Array.from({ length: 1 }).map((_, j) => (
+                    <div key={j} className="flex items-center gap-4">
+                        <div className="flex items-start h-8">
+                            <div className="animate-pulse bg-gray-300 rounded h-4 w-10 rounded-lg" />
+                        </div>
+                        <div className="animate-pulse bg-gray-300 rounded h-10 w-2" />
+                        <div className="flex-1">
+                            <div className="animate-pulse bg-gray-300 rounded h-4 w-full mb-1" />
+                            <div className="animate-pulse bg-gray-300 rounded h-4 w-3/4" />
+                        </div>
+                    </div>
+                ))}
+                </div>
+            </div>))}
+        </div>
+    </div>
+  )
+}

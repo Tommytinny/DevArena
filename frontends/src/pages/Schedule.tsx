@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react"
-import Header from "@/layouts/Headers"
-import Sidebar from "@/layouts/Sidebar"
-import { Calendar } from "@/components/schedule/Calendar"
-import { Events } from "@/components/schedule/Event"
-import { Event } from "@/types/schedule"
-import Loading from "@/components/loading/Loading"
-import axiosInstance from "@/services/axiosInstance"
+import { useState, useEffect } from "react";
+import Header from "@/layouts/Headers";
+import Sidebar from "@/layouts/Sidebar";
+import { Calendar } from "@/components/schedule/Calendar";
+import { Events } from "@/components/schedule/Event";
+import { Event } from "@/types/schedule";
+import axiosInstance from "@/services/axiosInstance";
+import { SchedulePageSkeleton } from "@/components/loading/Skeleton";
 
 
 export default function Schedule() {
@@ -54,13 +54,12 @@ export default function Schedule() {
         <div className="flex flex-1 lg:overflow-hidden">
           <Header />
           <Sidebar />
-          {isLoading ? 
-            <div className='flex justify-center items-center h-[100vh] w-[100vw]'>
-                <Loading type='bars' />
-            </div> :
+          
             <div className="p-6 px-1 max-w-full w-full lg:overflow-scroll space-y-6 mt-10 lg:mt-2">
             <div className="container mx-auto lg:pl-4 px-2 mt-2 pt-2">
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">My Schedules & Events</h1>
+            {isLoading ? 
+            <SchedulePageSkeleton /> :
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Calendar 
                 events={events}
@@ -72,9 +71,9 @@ export default function Schedule() {
                 events={selectedEvents}
                 height='500px'
             />
+            </div>}
             </div>
-            </div>
-        </div>}
+        </div>
         </div>
     </div>
 )
