@@ -85,6 +85,11 @@ export default function LoginPage() {
         if (role === 'admin') {
           const from = '/admin';
           navigate(from, { replace: true });
+        }
+        
+        if (role === 'instructor') {
+          const from = '/instructor';
+          navigate(from, { replace: true });
         } else {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const from = (location.state as any)?.from?.pathname || '/';

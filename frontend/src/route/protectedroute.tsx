@@ -5,7 +5,7 @@ import axiosInstance from "@/services/axiosInstance";
 import Loading from "@/components/loading/Loading";
 import Cookies from 'js-cookie';
 
-type Role = 'admin' | 'student'; // Restrict to specific role types
+type Role = 'admin' | 'instructor' | 'student'; // Restrict to specific role types
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

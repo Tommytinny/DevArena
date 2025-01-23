@@ -13,6 +13,7 @@ import CoursesList from './pages/CoursesPage';
 import ProfilePage from './pages/ProfilePage';
 import Schedule from './pages/Schedule';
 import TimetablePage from './pages/Timetable';
+import InstructorDashboard from './pages/InstructorPage';
 import './App.css';
 
 function App() {
@@ -31,6 +32,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/instructor"
+              element={
+                <ProtectedRoute allowedRoles={['instructor']}>
+                  <InstructorDashboard />
                 </ProtectedRoute>
               } 
             />

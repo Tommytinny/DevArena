@@ -31,32 +31,32 @@ export default function Sidebar() {
                 
             </div>
             <nav className="relative h-full">
-                <div className="absolute inset-x-0 top-0 flex items-center justify-center">
+                <div className="absolute inset-x-0 top-0 flex items-center justify-start px-6">
                 <div className="space-y-5 mt-6">
                     <Link 
                     className={`flex items-center gap-3  hover:text-red-500  ${currentPage === '/' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                     to="/"
                     onClick={() => setCurrentPage('/dashboard')}
                     >
-                         <Home className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">Home</span>}
+                         <Home className="w-5 h-5" />{isSidebarOpen && <span className="text-[18px]">Home</span>}
                     </Link>
                     <Link 
                     className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/courses' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                     to="/courses"
                     >
-                         <BookOpen className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">Courses</span>}
+                         <BookOpen className="w-5 h-5" />{isSidebarOpen && <span className="text-[18px]">Courses</span>}
                     </Link>
                     <Link 
                     className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/schedule' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                     to="/schedule"
                     >
-                         <Calendar className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">Schedules</span>}
+                         <Calendar className="w-5 h-5" />{isSidebarOpen && <span className="text-[18px]">Schedules</span>}
                     </Link>
                     <Link 
                     className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/timetable' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                     to="/timetable"
                     >
-                         <Calendar className="w-6 h-6" />{isSidebarOpen && <span className="text-[18px]">Timetable</span>}
+                         <Calendar className="w-5 h-5" />{isSidebarOpen && <span className="text-[18px]">Timetable</span>}
                     </Link>
                     {/*<Link 
                     className={`flex items-center gap-2 hover:text-red-500  ${currentPage === '/practical-details' ? 'text-red-500' : 'text-gray-600'}`}
@@ -100,13 +100,13 @@ export default function Sidebar() {
                             to="/profile"
                             onClick={() => setCurrentPage('/profile')}
                             >
-                                <User className="w-6 h-6 border rounded-3xl bg-gray-100 dark:bg-slate-800" />{isSidebarOpen && <span className="text-xl">Profile</span>}
+                                <User className="w-5 h-5 border rounded-3xl bg-gray-100 dark:bg-slate-800" />{isSidebarOpen && <span className="text-[18px]">Profile</span>}
                             </Link>
                             <Link 
                                 className={`flex items-center gap-3 hover:text-red-500  ${currentPage === '/logout' ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}
                                 to="/logout"
                                 onClick={() => setCurrentPage('/logout')}
-                                > <LogOut className="w-6 h-6" />{isSidebarOpen && <span className="text-xl">Log out</span>}
+                                > <LogOut className="w-5 h-5" />{isSidebarOpen && <span className="text-[18px]">Log out</span>}
                                 </Link>
                         
                         </div>
