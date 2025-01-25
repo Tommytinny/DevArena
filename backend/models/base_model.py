@@ -43,6 +43,7 @@ class BaseModel:
                                          self.__dict__)
         
     def save(self):
+        """ save session to the database """
         self.updated_at = datetime.utcnow()
         models.storage.new(self)
         models.storage.save()

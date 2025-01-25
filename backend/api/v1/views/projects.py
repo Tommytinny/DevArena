@@ -9,6 +9,7 @@ from models.task  import Task
 from models.resource import Resource
 from flask import jsonify, abort, request
 from api.v1.views import app_views
+from api.v1.app import cache
 
 @app_views.route("/courses/<course_id>/projects", methods=['POST'],
                  strict_slashes=False)
@@ -33,6 +34,11 @@ def create_project(course_id):
 
     new_project = Project(**req)
     new_project.save()
+    
+    # Cache the new project for 5 minutes
+    cache.delete_cache("all_projects")
+    redis_key = f"project:{new_project.id}"
+    cache.set_cache(redis_key, new_project.to_dict())
 
     return jsonify(new_project.to_dict()), 201
 
@@ -42,8 +48,11 @@ def list_all_projects():
     """
     Retrieves the list of all Project objects
     """
+    
     projects = storage.all(Project).values()
     projects_list = [project.to_dict() for project in projects]
+    
+    
     return jsonify(projects_list)
 
 
@@ -53,12 +62,24 @@ def projects_under_course(course_id):
     """
     Retrieves the list of all Project objects under a Course
     """
+    redis_key = "all_projects"
+    
+    # Check Redis cache first
+    cached_projects = cache.get_cache(redis_key)
+    if cached_projects:
+        return jsonify(cached_projects)
+    
     courses = storage.get(Course, course_id)
     if courses is None:
         abort(404)
-        
+
     projects = storage.all(Project).values()
     projects_list = [project.to_dict() for project in projects if project.course_id == course_id]
+    
+    
+    # Cache the list of projects in Redis for 5 minutes
+    cache.set_cache(redis_key, projects_list)
+    
     return jsonify(projects_list)
 
 
@@ -68,19 +89,20 @@ def retrieve_project(project_id):
     """
     Retrieves a Project object
     """
+    redis_key = f"project:{project_id}"
+    
+    # Check Redis cache first
+    cached_project = cache.get_cache(redis_key)
+    if cached_project:
+        return jsonify(cached_project)
+    
     project = storage.get(Project, project_id)
     if project is None:
         abort(404)
     
-    resources = storage.all(Resource).values()
-    resource_list = [resource.to_dict() for resource in resources if resource.project_id == project_id]
-    if resource_list:
-        project.__dict__['resources'] = resource_list
+    # Store project data in Redis (cache it) for future requests
+    cache.set_cache(redis_key, project.to_dict())
     
-    tasks = storage.all(Task).values()
-    task_list = [task.to_dict() for task in tasks if task.project_id == project_id]
-    if task_list:
-        project.__dict__['tasks'] = task_list
     return jsonify(project.to_dict())
 
 
@@ -95,6 +117,12 @@ def delete_project(project_id):
         abort(404)
     project.delete()
     storage.save()
+    
+    # remove the projects from the cache
+    redis_keys = [f"project:{project_id}", "all_projects"]
+    for key in redis_keys:
+        cache.delete_cache(key)
+    
     return jsonify({}), 200
 
 
@@ -118,4 +146,10 @@ def update_project(project_id):
         if k not in check:
             setattr(project, k, v)
     storage.save()
+    
+    # Update the cache for 5 minutes with the updated timetable
+    cache.delete_cache("all_projects")
+    redis_key = f"timetable:{project_id}"
+    cache.set_cache(redis_key, project.to_dict())
+    
     return jsonify(project.to_dict()), 200

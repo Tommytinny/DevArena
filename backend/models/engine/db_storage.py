@@ -46,7 +46,7 @@ class DBStorage:
             pool_size=20,
             max_overflow=10,
             pool_timeout=30,
-            pool_recycle=1800
+            pool_recycle=1800,
             )
         if env == "development":
             #Base.metadata.drop_all(self.__engine)

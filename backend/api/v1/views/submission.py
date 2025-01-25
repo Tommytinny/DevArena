@@ -16,6 +16,8 @@ from api.v1.app import app
 from werkzeug.utils import secure_filename
 import os
 import subprocess
+from api.v1.app import cache
+
 
 app.config['UPLOAD_FOLDER'] = './uploads'
 app.config['TEST_FOLDER'] = './tests'
@@ -81,6 +83,7 @@ def all_submission(project_id):
     """
     Retrieves the list of all Submission objects
     """
+    
     from api.v1.app import auth
     user = auth.current_user(request)
     if user is None:
@@ -92,6 +95,8 @@ def all_submission(project_id):
         
     submissions = storage.all(Submission).values()
     submission_list = [submission.to_dict() for submission in submissions if submission.project_id == project_id and submission.student_id == user.id]
+    
+    
     return jsonify(submission_list)
 
 
@@ -101,10 +106,12 @@ def retrieve_submission(project_id, task_id):
     """
     Retrieves a Submission object
     """
+    
     from api.v1.app import auth
     user = auth.current_user(request)
     if user is None:
         abort(404)
+    
     
     project = storage.get(Project, project_id)
     if project is None:
@@ -116,6 +123,8 @@ def retrieve_submission(project_id, task_id):
     
     submissions = storage.all(Submission).values()
     submission = [submission.to_dict() for submission in submissions if submission.task_id == task_id and submission.project_id == project_id and submission.student_id == user.id]
+    
+    
     return jsonify(submission)
 
 
@@ -166,7 +175,6 @@ def update_submission(submission_id):
             request_data['student_id'] = user.id
             
     check = ["id", "__class__", "created_at", "updated_at"]
-    
     for k, v in request_data.items():
         if k not in check:
             setattr(submission, k, v)
@@ -174,13 +182,15 @@ def update_submission(submission_id):
     
     test_results = storage.all(TestResult).values()
     for test_result in test_results:
-        test_result.delete()
+        if test_result.submission_id == submission.id:
+            test_result.delete()
     storage.save()
 
     #for k, v in req.items():
         #if k not in check:
             #setattr(submission, k, v)
-    #storage.save()
+    #storage.save()SW
+    
     return jsonify(submission.to_dict()), 200
 
 

@@ -10,6 +10,7 @@ import { LogOut } from 'lucide-react';
 
 
 export default function AdminDashboard() {
+  
     return (
       <div className="container mx-auto p-6">
         <div className='flex justify-between'>
@@ -22,15 +23,15 @@ export default function AdminDashboard() {
         </div>
         
         
-        <Tabs defaultValue="users" className="space-y-4">
+        <Tabs defaultValue="levels" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="levels">Levels</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="timetables">Timetables</TabsTrigger>
           </TabsList>
-          <UsersList />
           <LevelsList />
+          <UsersList />
           <CoursesList />
           <TimetablesList />
         </Tabs>

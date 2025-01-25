@@ -32,89 +32,75 @@ export function CoursesList() {
     setIsEditModalOpen(false);
   };
 
+  
   const fetchCourse = async () => {
     try {
       const response = await axiosInstance.get('/courses');
-
       if (response.status === 200) {
-        const data = response.data;
-        setCourses(data);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error('Error', error);
-    } 
-  };
-  
-
-  useEffect(() => {
-    const fetchCourse = async () => {
-      try {
-        const response = await axiosInstance.get('/courses');
-        if (response.status === 200) {
-          return response.data; // Return the courses data
-        }
-        return [];
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-        return [];
-      }
-    };
-  
-    const fetchLevel = async (id: string) => {
-      try {
-        const levelResponse = await axiosInstance.get(`/levels/${id}`);
-        if (levelResponse.status === 200) {
-          return `${levelResponse.data.name} - ${levelResponse.data.semester}`;
-        }
-      } catch (error) {
-        console.error('Error fetching level:', error);
-      }
-      return '';
-    };
-  
-    const fetchInstructor = async (id: string) => {
-      try {
-        const instructorResponse = await axiosInstance.get(`/users/${id}`);
-        if (instructorResponse.status === 200) {
-          return `${instructorResponse.data.title} ${instructorResponse.data.first_name} ${instructorResponse.data.last_name}`;
-        }
-      } catch (error) {
-        console.error('Error fetching instructor:', error);
-      }
-      return '';
-    };
-  
-    const fetchProject = async (id: string) => {
-      try {
-        const projectsResponse = await axiosInstance.get(`/courses/${id}/projects`);
-        if (projectsResponse.status === 200) {
-          return projectsResponse.data;
-        }
-      } catch (error) {
-        console.error('Error fetching projects:', error);
+        return response.data; // Return the courses data
       }
       return [];
-    };
-  
-    const updateCourses = async () => {
-      try {
-        const courses = await fetchCourse();
-        const newCourses = await Promise.all(
-          courses.map(async (course: any) => ({
-            ...course,
-            level: await fetchLevel(course.level_id),
-            instructor: await fetchInstructor(course.instructor_id),
-            project_no: (await fetchProject(course.id)).length,
-          }))
-        );
-        setUpdatedCourses(newCourses); // Update the state with enriched course data
-        setLoading(false); // Set loading to false after updating
-      } catch (error) {
-        console.error('Error updating courses:', error);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      return [];
+    }
+  };
+
+  const fetchLevel = async (id: string) => {
+    try {
+      const levelResponse = await axiosInstance.get(`/levels/${id}`);
+      if (levelResponse.status === 200) {
+        return `${levelResponse.data.name} - ${levelResponse.data.semester}`;
       }
-    };
-  
+    } catch (error) {
+      console.error('Error fetching level:', error);
+    }
+    return '';
+  };
+
+  const fetchInstructor = async (id: string) => {
+    try {
+      const instructorResponse = await axiosInstance.get(`/users/${id}`);
+      if (instructorResponse.status === 200) {
+        return `${instructorResponse.data.title} ${instructorResponse.data.first_name} ${instructorResponse.data.last_name}`;
+      }
+    } catch (error) {
+      console.error('Error fetching instructor:', error);
+    }
+    return '';
+  };
+
+  const fetchProject = async (id: string) => {
+    try {
+      const projectsResponse = await axiosInstance.get(`/courses/${id}/projects`);
+      if (projectsResponse.status === 200) {
+        return projectsResponse.data;
+      }
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    }
+    return [];
+  };
+
+  const updateCourses = async () => {
+    try {
+      const courses = await fetchCourse();
+      const newCourses = await Promise.all(
+        courses.map(async (course: any) => ({
+          ...course,
+          level: await fetchLevel(course.level_id),
+          instructor: await fetchInstructor(course.instructor_id),
+          project_no: (await fetchProject(course.id)).length,
+        }))
+      );
+      setUpdatedCourses(newCourses); // Update the state with enriched course data
+      setLoading(false); // Set loading to false after updating
+    } catch (error) {
+      console.error('Error updating courses:', error);
+    }
+  };
+
+  useEffect(() => {  
     updateCourses();
   }, []);
 
@@ -152,7 +138,7 @@ export function CoursesList() {
         isOpen={isAddModalOpen}
         onClose={() => {
           setIsAddModalOpen(false);
-          fetchCourse();
+          updateCourses();
         }}
       />
 
@@ -162,7 +148,7 @@ export function CoursesList() {
             isOpen={isEditModalOpen}
             onClose={() => {
               setIsEditModalOpen(false);
-              fetchCourse();
+              updateCourses();
             }}
             course={selectedCourse}
             onEdit={handleEditCourse}
@@ -171,7 +157,7 @@ export function CoursesList() {
             isOpen={isDeleteModalOpen}
             onClose={() => {
               setIsDeleteModalOpen(false);
-              fetchCourse();
+              updateCourses();
             }}
             course={selectedCourse}
           />

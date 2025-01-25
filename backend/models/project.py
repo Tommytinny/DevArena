@@ -20,7 +20,7 @@ class Project(BaseModel, Base):
         project_type = Column(Text, nullable=False)
         tasks = relationship("Task", backref="projects", cascade='all, delete')
         resources = relationship("Resource", backref="projects", cascade='all, delete')
-        submissions = relationship("Submission", backref="projects")
+        submissions = relationship("Submission", backref="projects", cascade='all, delete')
     else:
         course_id = ""
         name = ""

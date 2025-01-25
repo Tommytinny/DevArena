@@ -10,7 +10,7 @@ class TestCase(BaseModel, Base):
     """Representation of a submission """
     if storage_t == 'db':
         __tablename__ = 'test_cases'
-        task_id = Column(String(128), ForeignKey('tasks.id'), nullable=False)
+        task_id = Column(String(128), ForeignKey('tasks.id', ondelete='CASCADE'), nullable=False)
         name = Column(String(255), nullable=False)
         input = Column(Text, nullable=False)
         expected = Column(Text, nullable=False)

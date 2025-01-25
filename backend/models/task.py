@@ -22,7 +22,7 @@ class Task(BaseModel, Base):
         language = Column(String(128), nullable=False)
         image_url = Column(String(255), nullable=True)
         test_cases = relationship("TestCase", backref="tasks", cascade='all, delete')
-        submissions = relationship("Submission", backref="tasks")
+        submissions = relationship("Submission", backref="tasks", cascade='all, delete')
     else:
         project_id = ""
         name = ""

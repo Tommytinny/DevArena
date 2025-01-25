@@ -11,10 +11,10 @@ from api.v1.auth.jwt_auth import JWTAuth
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 import os
+from api.v1.caching.cache import Cache
 
 
 app = Flask(__name__)
-app.register_blueprint(app_views)
 CORS(app, resources={
     r"/api/v1/*": {
         "origins": ["http://localhost:5173"],
@@ -22,7 +22,10 @@ CORS(app, resources={
     }
 })
 
+app.register_blueprint(app_views)
 
+
+cache = Cache()
 auth = getenv("AUTH_TYPE", None)
 jwt_secret_key = getenv("SECRET_KEY", None)
 
@@ -48,7 +51,7 @@ def request_handler() -> None:
     else:
         if not auth.require_auth(request.path,
                                  ['/api/v1/status/', '/api/v1/unauthorized/',
-                                  '/api/v1/forbidden/', 
+                                  '/api/v1/forbidden/',
                                   '/api/v1/auth_session/login/', '/api/v1/auth_session/']):
             pass
         else:
@@ -95,6 +98,7 @@ def forbidden(error) -> str:
     return jsonify({"error": "Forbidden"}), 403
 
 
+        
 if __name__ == '__main__':
     host = getenv("HBNB_API_HOST") if getenv("HBNB_API_HOST") else "0.0.0.0"
     port = getenv("HBNB_API_PORT") if getenv("HBNB_API_PORT") else 5000

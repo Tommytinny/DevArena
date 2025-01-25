@@ -44,7 +44,7 @@ export function UsersList() {
       const response = await axiosInstance.get('/users');
 
       if (response.status === 200) {
-        const data = response.data;
+        const data = response.data.filter((user: { role: string; }) => user.role !== "admin")
         setUsersList(data);
         setLoading(false);
       }

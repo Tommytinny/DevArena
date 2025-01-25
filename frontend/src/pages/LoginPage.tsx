@@ -85,17 +85,20 @@ export default function LoginPage() {
         if (role === 'admin') {
           const from = '/admin';
           navigate(from, { replace: true });
+          return;
         }
         
         if (role === 'instructor') {
           const from = '/instructor';
           navigate(from, { replace: true });
+          return;
         } else {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const from = (location.state as any)?.from?.pathname || '/';
           navigate(from, { replace: true });
+          return;
         }
-        return;
+        
       }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

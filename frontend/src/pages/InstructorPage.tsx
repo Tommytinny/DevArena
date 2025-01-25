@@ -1,6 +1,5 @@
 import { ProjectsList } from '@/components/instructor/projects/Projects';
 import { EventsList } from '@/components/instructor/events/Events';
-import { TimetablesList } from '@/components/instructor/timetable/Timetable';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Link } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
@@ -18,14 +17,13 @@ export default function InstructorDashboard() {
             </Link>
         </div>
         
-        <Tabs defaultValue="users" className="space-y-4">
+        <Tabs defaultValue="projects" className="space-y-4">
           <TabsList>
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
           </TabsList>
           <ProjectsList />
           <EventsList />
-          <TimetablesList />
         </Tabs>
     </div>
     );

@@ -6,8 +6,10 @@ from models import storage
 from api.v1.auth.auth import Auth
 
 
+
 class JWTAuth(Auth):
     def __init__(self, app=None, secret_key=None, token_expires_in_minutes=30):
+        from api.v1.caching.cache import Cache
         """
         Initialize the JWTAuth class.
 
@@ -15,6 +17,7 @@ class JWTAuth(Auth):
         :param secret_key: Secret key for JWT signing
         :param token_expires_in_minutes: Token expiration time in minutes
         """
+        self.cache = Cache()
         self.jwt = None
         self.secret_key = secret_key
         self.token_expires_in_minutes = token_expires_in_minutes
@@ -43,32 +46,37 @@ class JWTAuth(Auth):
 
     def current_user(self, request=None):
         """
-        Retrieve the identity of the current user from the JWT token.
-
-        :return: The identity of the user
+        Retrieve the identity of the current user from the JWT token,
+        using Redis for caching.
         """
-        dictt = {}
-        verify_jwt_in_request()
-        current_user = get_jwt_identity()
-        if current_user is None:
-            return None
-        
-        dictt["email"] = current_user
+        try:
+            verify_jwt_in_request()
+            current_user_email = get_jwt_identity()
+            if current_user_email is None:
+                return None
+            
+            key = f"user:{current_user_email}"
+            cached_user = self.cache.get_cache(key)
+            if cached_user:
+                return cached_user
 
-        user_exist = storage.search(User, dictt)
-        
-        if not user_exist:
-            return None
-        for user in user_exist:
-            user_id = user.id
-        
-        user_instance = storage.get(User, user_id)
+            dictt = {"email": current_user_email}
+            user_exist = storage.search(User, dictt)
 
-        if user_instance is None:
-            return None
-        else:
+            if not user_exist:
+                return None
+
+            user_instance = user_exist[0]
+            
+
+            self.cache.set_cache(current_user_email, user_instance.to_dict())
+            
             return user_instance
 
+        except Exception as e:
+            print(f"Error in current_user: {e}")
+            return None
+    
     def jwt_required_decorator(self, func):
         """
         Wrapper for @jwt_required decorator to protect a route.

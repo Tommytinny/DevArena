@@ -9,9 +9,9 @@ class TestResult(BaseModel, Base):
     """Representation of a testresult """
     if storage_t == 'db':
         __tablename__ = 'test_results'
-        submission_id = Column(String(128), ForeignKey('submissions.id'), nullable=False)
-        task_id = Column(String(128), ForeignKey('tasks.id'), nullable=False)
-        test_case_id = Column(String(128), ForeignKey('test_cases.id'), nullable=False)
+        submission_id = Column(String(128), ForeignKey('submissions.id', ondelete='CASCADE'), nullable=False)
+        task_id = Column(String(128), ForeignKey('tasks.id', ondelete='CASCADE'), nullable=False)
+        test_case_id = Column(String(128), ForeignKey('test_cases.id', ondelete='CASCADE'), nullable=False)
         name = Column(String(128), nullable=False)
         status = Column(String(128), nullable=False)
         actual_output = Column(Text, nullable=True)

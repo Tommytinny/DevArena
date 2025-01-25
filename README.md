@@ -61,6 +61,7 @@ This product is built using the following widely used technologies:
 - Python 3.x  
 - Node.js
 - MySQL  
+- Redis
 - Virtual Environment (optional)  
 
 ### **Steps**  

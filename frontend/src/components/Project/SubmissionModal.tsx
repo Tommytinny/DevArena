@@ -141,10 +141,17 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose 
     try {
       const submission = await axiosInstance.put(`/submissions/${submission_id}`, formData);
       if (submission.status === 200) {
+        toast({
+          title: "Success",
+          description: "File submitted successfully",
+        });
         const updatedTasks = await fetchTaskData(projectId, task_id);
+        setTaskResult(null);
         setTaskData(updatedTasks);
         setIsSubmitting(false);
-
+        setErrorMessage('');
+        setFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
       }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
@@ -280,10 +287,10 @@ export default function SubmissionModal({ task, taskResults, projectId, onClose 
                             />
                         </div>
                         <Button className="bg-[#ff4444] rounded-[3px]" type='submit' disabled={isSubmitting}>
-                            {isSubmitting ? 
-                            <div className="flex justify-center items-center">
-                                <ReactLoading type="bubbles" color="#EF4444" height={100} width={50} />
-                            </div> : "Submit"}
+                        {isSubmitting ? 
+                          <div className="flex justify-center items-center">
+                              <LoaderCircle className="h-4 w-4 animate-spin" />Submitting...
+                          </div> : "Submit"}
                         </Button>
                       </form>
                     </div>

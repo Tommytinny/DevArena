@@ -10,10 +10,10 @@ class Course(BaseModel, Base):
     """Representation of a Course """
     if storage_t == 'db':
         __tablename__ = 'courses'
-        instructor_id = Column(String(128), ForeignKey('users.id'), nullable=False)
+        instructor_id = Column(String(128), ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
         title = Column(String(255), nullable=False)
         course_code = Column(String(50), nullable=False)
-        level_id = Column(String(128), ForeignKey('levels.id'), nullable=False)
+        level_id = Column(String(128), ForeignKey('levels.id', ondelete='CASCADE'), nullable=False)
         units = Column(Integer, nullable=False)
         description = Column(Text, nullable=False)
         projects = relationship("Project", backref="courses", cascade='all, delete')

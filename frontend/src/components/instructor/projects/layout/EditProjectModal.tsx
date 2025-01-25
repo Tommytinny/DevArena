@@ -7,11 +7,12 @@ import { Label } from "@/components/ui/label";
 import { TaskInput } from './editComponent/TaskInput';
 import { ResourceInput } from './editComponent/ResourceInput';
 import axiosInstance from '@/services/axiosInstance';
+import type { Project } from '../Projects';
 
 interface EditProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  project: any[];
+  project: Project;
   onEdit: (project: any) => void;
 }
 

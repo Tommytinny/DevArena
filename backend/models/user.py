@@ -20,11 +20,11 @@ class User(BaseModel, Base):
         last_name = Column(String(128), nullable=False)
         matric_number = Column(String(128), nullable=True)
         role = Column(Enum('student', 'instructor', 'admin', name='user_roles'), nullable=False)
-        level_id = Column(String(128), ForeignKey('levels.id'), nullable=True)
+        level_id = Column(String(128), ForeignKey('levels.id', ondelete='CASCADE'), nullable=True)
         session_id = Column(String(128), nullable=True)
         reset_token = Column(String(128), nullable=True)
-        submissions = relationship("Submission", backref="users")
-        grades = relationship("Grade", backref="users")
+        submissions = relationship("Submission", backref="users", cascade='all, delete')
+        grades = relationship("Grade", backref="users", cascade='all, delete')
         level = relationship('Level', back_populates='students')
         
         

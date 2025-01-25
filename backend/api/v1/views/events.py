@@ -6,6 +6,7 @@ from models import storage
 from models.event import Event
 from flask import jsonify, abort, request
 from api.v1.views import app_views
+from api.v1.app import cache
 
 
 @app_views.route("/events", methods=['GET'],
@@ -14,8 +15,18 @@ def list_all_events():
     """
     Retrieves the list of all Level objects
     """
+    redis_key = "all_events"
+    
+    # Check Redis cache first
+    cached_levels = cache.get_cache(redis_key)
+    if cached_levels:
+        return jsonify(cached_levels)
     events = storage.all(Event).values()
     events_list = [event.to_dict() for event in events]
+    
+    # Cache the list of events in Redis for 5 minutes
+    cache.set_cache(redis_key, events_list)
+    
     return jsonify(events_list)
 
 
@@ -26,9 +37,19 @@ def retrieve_event(event_id):
     """
     Retrieves a Event object
     """
+    redis_key = f"event:{event_id}"
+    
+    # Check Redis cache first
+    cached_event = cache.get_cache(redis_key)
+    if cached_event:
+        return jsonify(cached_event)
     event = storage.get(Event, event_id)
     if event is None:
         abort(404)
+        
+    # Store event data in Redis (cache it) for future requests
+    cache.set_cache(redis_key, event.to_dict())
+    
     return jsonify(event.to_dict())
 
 
@@ -43,6 +64,12 @@ def delete_event(event_id):
         abort(404)
     event.delete()
     storage.save()
+    
+    # remove the event from the cache
+    redis_keys = [f"user:{event_id}", "all_events"]
+    for key in redis_keys:
+        cache.delete_cache(key)
+
     return jsonify({}), 200
 
 
@@ -65,6 +92,11 @@ def create_event():
 
     new_event = Event(**req)
     new_event.save()
+    
+    # Cache the new event for 5 minutes
+    cache.delete_cache("all_events")
+    redis_key = f"event:{new_event.id}"
+    cache.set_cache(redis_key, new_event.to_dict())
 
     return jsonify(new_event.to_dict()), 201
 
@@ -89,4 +121,10 @@ def update_event(event_id):
         if k not in check:
             setattr(event, k, v)
     storage.save()
+    
+    # Update the cache for 5 minutes with the updated event
+    cache.delete_cache("all_events")
+    redis_key = f"event:{event_id}"
+    cache.set_cache(redis_key, event.to_dict())
+    
     return jsonify(event.to_dict()), 200

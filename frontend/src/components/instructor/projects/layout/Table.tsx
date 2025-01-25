@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Edit2, Trash2 } from 'lucide-react';
 import { LoaderPinwheel } from 'lucide-react';
+import Loading from '@/components/loading/Loading';
 
 
 interface TableProps {
@@ -30,9 +31,8 @@ export function Table({ projects, onEdit, onDelete, loading }: TableProps) {
           {loading ?
           <tr>
             <td colSpan={5} style={{ position: "relative", height: "100px" }}>
-              <div className='flex justify-center items-center gap-2'>
-                <LoaderPinwheel className="h-4 w-4 animate-spin" />
-                <span>Loading projects</span>
+              <div className='flex justify-center items-center gap-2 py-6'>
+                <Loading type="bubbles" />
               </div>
             </td>
           </tr>
