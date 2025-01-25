@@ -172,3 +172,4 @@ This project is licensed under the MIT License. Feel free to use, modify, and di
 
 ## 🙌 **Acknowledgments**
 - Inspired by practical learning initiatives in computer science education.
+_ Inspired by alx intranet platform.
