@@ -43,7 +43,7 @@ This product is built using the following widely used technologies:
 
 ### **Frontend**
 - Tailwind CSS [tailwindcss.com](https://tailwindcss.com/) / Material UI [mui.com](https://mui.com/)
-- React [![React](https://img.shields.io/badge/React-17.x-blue?logo=react)](https://reactjs.org/)
+- React/Typscript [![React](https://img.shields.io/badge/React-17.x-blue?logo=react)](https://reactjs.org/)
 - Axios [axios-http.com](https://axios-http.com)
 
 ### **Backend**
